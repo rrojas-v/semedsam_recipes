@@ -25,7 +25,9 @@
                 </template>
 
                 <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
+                <Column field="fechaFormated" header="Fecha" sortable></Column>
                 <Column field="pacient.nombre" header="Paciente" sortable style="min-width: 16rem"></Column>
+                <Column field="clinica" header="Atendido en" sortable style="min-width: 16rem"></Column>
 
             </DataTable>
         </div>
@@ -47,6 +49,7 @@ import Column from 'primevue/column';
 onMounted(() => {
     console.log("onMounted");
     RecipesService.getRecipes().then((data) => (recipes.value = data));
+
     console.log("onMounted", recipes);
 });
 

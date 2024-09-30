@@ -1,7 +1,3 @@
-// {
-//     id: '0',
-//     description: '',
-// }
 export const MedicationsService = {
     getMedicationsData() {
         return [{

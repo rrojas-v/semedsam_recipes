@@ -250,21 +250,22 @@
 import Button from 'primevue/button'
 import Toolbar from 'primevue/toolbar'
 import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
+
 import DatePicker from 'primevue/datepicker'
 import Select from 'primevue/select'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Dialog from 'primevue/dialog'
-import AutoComplete from 'primevue/autocomplete'
-import Card from 'primevue/card';
 import Panel from 'primevue/panel'
 
 import { ref, onMounted, computed } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 import { useToast } from 'primevue/usetoast';
+
 import { MedicationsService } from '@/service/MedicationsService';
 import { PacientService } from "@/service/PacientService"
+import { RecipesService } from '@/service/RecipeService';
+
 import router from '@/router'
 
 onMounted(() => {
@@ -286,7 +287,7 @@ const selectSearchPacient = ref()
 
 const toast = useToast();
 const dt = ref();
-const recipes = ref([]);
+//const recipes = ref([]);
 const medications = ref();
 const medicationDialog = ref(false);
 const deleteMedicationDialog = ref(false);
@@ -493,11 +494,11 @@ const saveRecipe = () => {
     }
     else {
         let newRecipe = {}
+        newRecipe.fecha = new Date()
         newRecipe.pacient = selectedPacient.value;
         newRecipe.medications = medications.value.map(medication => medication)
-        recipes.value.push(newRecipe)
+        RecipesService.addRecipe(newRecipe)
     }
-    console.log(recipes.value)
     router.push('/')
 }
 const isPositiveInteger = (val) => {
