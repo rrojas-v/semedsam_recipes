@@ -32,7 +32,7 @@
                 <div class="col">
                     Fecha de nacimiento:<span v-if="selectedPacient"
                         class="text-left p-3 border-round-sm bg-primary font-bold">{{
-                            pacientFechaNacimiento }}</span>
+    pacientFechaNacimiento }}</span>
                 </div>
             </div>
         </div>
@@ -114,7 +114,6 @@
             <template #start>
                 <Button label="Guardar Receta" icon="pi pi-check" severity="contrast" @click="saveRecipe" text rounded
                     aria-label="" :disabled="!selectedPacient" />
-                <div v-if="medications && medications.length > 0">{{ medications[0].name }}</div>
             </template>
         </Toolbar>
     </div>
@@ -159,7 +158,7 @@
     <Dialog v-model:visible="deleteMedicationDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
-            <span v-if="medication">¿Esta seguro de quitar <b>{{ medication.name }}</b>?</span>
+            <span v-if="medication">¿Esta seguro de quitar <b>{{ medication.nombre }}</b>?</span>
         </div>
         <template #footer>
             <Button label="No" icon="pi pi-times" text @click="deleteMedicationDialog = false" />
@@ -416,7 +415,6 @@ const hideDialog = () => {
 };
 const saveMedication = () => {
     submitted.value = true;
-
     if (medication?.value.nombre?.trim()) {
         if (medication.value.id) {
             medications.value[findIndexById(medication.value.id)] = medication.value;
@@ -487,9 +485,10 @@ const deleteSelectedMedications = () => {
     toast.add({ severity: 'success', summary: 'Successful', detail: 'Medications Deleted', life: 3000 });
 };
 const saveRecipe = () => {
-    console.log('saveRecipe', medications.value)
-    console.log('pacient', selectedPacient)
-    if (!medications.value || !(medicationCaptured.value)) {
+    // console.log('saveRecipe', medications.value.length)
+    // console.log('saveRecipe', medications.value)
+    //console.log('pacient', selectedPacient)
+    if (!medicationCaptured.value) {
         console.log('error falta medicamento')
     }
     else {
