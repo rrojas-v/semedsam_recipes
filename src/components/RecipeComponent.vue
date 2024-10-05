@@ -267,11 +267,13 @@ import { PacientService } from "@/service/PacientService"
 import { RecipesService } from '@/service/RecipeService';
 
 import router from '@/router'
+import html2pdf from 'html2pdf.js'
+
+import { database } from "@/firebase.js";
+import { addDoc, collection } from 'firebase/firestore/lite'
 
 onMounted(() => {
     PacientService.getPacients().then((data) => (pacients.value = data));
-    //console.log(pacients)
-
     MedicationsService.getMedications().then((data) => (medications.value = data));
 });
 
@@ -287,7 +289,7 @@ const selectSearchPacient = ref()
 
 const toast = useToast();
 const dt = ref();
-//const recipes = ref([]);
+
 const medications = ref();
 const medicationDialog = ref(false);
 const deleteMedicationDialog = ref(false);
@@ -399,11 +401,7 @@ const pacientFechaNacimiento = computed({
     }
 })
 //pacient end
-// const openNew = () => {
-//     medication.value = {};
-//     submitted.value = false;
-//     medicationDialog.value = true;
-// };
+
 const medicationCaptured = computed({
     get() {
         return medications.value.length > 0 && medications.value[0].nombre
@@ -476,29 +474,52 @@ const createCode = () => {
     }
     return id;
 }
-// const confirmDeleteSelected = () => {
-//     deleteMedicationsDialog.value = true;
-// };
 const deleteSelectedMedications = () => {
     medications.value = medications.value.filter(val => !selectedMedications.value.includes(val));
     deleteMedicationsDialog.value = false;
     selectedMedications.value = null;
     toast.add({ severity: 'success', summary: 'Successful', detail: 'Medications Deleted', life: 3000 });
 };
+const exportToPDF = () => {
+    let elEvens = document.querySelectorAll('tr.p-row-odd')
+    elEvens.forEach((e) => e.setAttribute("style", "background-color:#ffffff; color:#000000 !important"))
+    let elOdds = document.querySelectorAll('tr.p-row-even')
+    elOdds.forEach((e) => e.setAttribute("style", "background-color:#ffffff; color:#000000 !important"))
+
+    let toPrint = document.querySelectorAll('tbody.p-datatable-tbody')[0]
+    console.log(toPrint)
+
+    html2pdf(toPrint, {
+        margin: 20,
+        filename: "generated-pdf.pdf",
+    });
+}
+
+const saveRecipeToDatabase = async (newRecipe) => {
+    try {
+        const docRef = await addDoc(collection(database, "recipes"), newRecipe);
+        console.log("New recipe written with ID: ", docRef.id);
+        return docRef.id
+    } catch (e) {
+        console.error("Error adding recipe: ", e);
+    }
+}
+
 const saveRecipe = () => {
-    // console.log('saveRecipe', medications.value.length)
-    // console.log('saveRecipe', medications.value)
-    //console.log('pacient', selectedPacient)
     if (!medicationCaptured.value) {
         console.log('error falta medicamento')
     }
     else {
+
         let newRecipe = {}
         newRecipe.fecha = new Date()
-        newRecipe.pacient = selectedPacient.value;
+        newRecipe.pacient = selectedPacient.value
         newRecipe.medications = medications.value.map(medication => medication)
         RecipesService.addRecipe(newRecipe)
+        saveRecipeToDatabase(newRecipe)
+        exportToPDF()
     }
+    console.log('saveRecipe', RecipesService.recipies)
     router.push('/')
 }
 const isPositiveInteger = (val) => {

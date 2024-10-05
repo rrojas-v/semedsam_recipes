@@ -14,7 +14,7 @@
                 currentPageReportTemplate="{first} - {last} de {totalRecords} registros">
                 <template #header>
                     <div class="flex flex-wrap gap-2 items-center justify-between">
-                        <!-- <h4 class="m-0">Administración de Recetas Médicas</h4> -->
+
                         <IconField>
                             <InputIcon>
                                 <i class="pi pi-search" />
@@ -47,10 +47,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
 onMounted(() => {
-    console.log("onMounted");
     RecipesService.getRecipes().then((data) => (recipes.value = data));
-
-    console.log("onMounted", recipes);
 });
 
 const dt = ref();
@@ -59,9 +56,5 @@ const selectedRecipes = ref();
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-
-// const openNew = () => {
-//     router.push({ 'path': 'newrecipe' })
-// };
 
 </script>
