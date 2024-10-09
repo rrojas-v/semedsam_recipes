@@ -33,14 +33,14 @@ const showNew = () => {
   <header>
     <div class="grid">
       <div class="col">
-        <div class="text-center p-3 border-round-sm bg-primary font-bold ">RECEPTARIO ELECTRÓNICO SEMEDSAM</div>
+        <div class="text-center p-3 border-round-sm bg-primary font-bold text-2xl">RECEPTARIO ELECTRÓNICO SEMEDSAM</div>
       </div>
     </div>
     <div class="grid">
       <div class="col">
         <Toolbar>
           <template #start>
-            <Button icon="pi pi-home" class="mr-2" severity="secondary" text size="large" />
+            <!-- <Button icon="pi pi-home" class="mr-2" severity="secondary" text size="large" /> -->
             <Button label="Listado de Recetas" icon="pi pi-address-book" icon-pos="top" class="mr-2"
               severity="secondary" text size="large" @click="showList" />
             <Button label="Nueva Receta" icon="pi pi-file-plus" icon-pos="top" class="mr-2" severity="secondary" text
