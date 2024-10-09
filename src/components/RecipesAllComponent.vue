@@ -14,7 +14,6 @@
                 currentPageReportTemplate="{first} - {last} de {totalRecords} registros">
                 <template #header>
                     <div class="flex flex-wrap gap-2 items-center justify-between">
-
                         <IconField>
                             <InputIcon>
                                 <i class="pi pi-search" />
@@ -25,8 +24,8 @@
                 </template>
 
                 <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-                <Column field="fechaFormated" header="Fecha" sortable></Column>
-                <Column field="pacient.nombre" header="Paciente" sortable style="min-width: 16rem"></Column>
+                <Column field="fecha" header="Fecha" sortable></Column>
+                <Column field="pacientFullName" header="Paciente" sortable style="min-width: 16rem"></Column>
                 <Column field="clinica" header="Atendido en" sortable style="min-width: 16rem"></Column>
 
             </DataTable>

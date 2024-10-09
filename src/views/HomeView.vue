@@ -1,9 +1,9 @@
 <script setup>
-import RecipesAll from '@/components/RecipesAll.vue';
+import RecipesAllComponent from '@/components/RecipesAllComponent.vue';
 </script>
 
 <template>
   <main>
-    <RecipesAll />
+    <RecipesAllComponent />
   </main>
 </template>

@@ -1,34 +1,37 @@
 import { database } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore/lite";
 
+function timestampToDate(seconds, nanoseconds = 0) {
+    // Convertimos los segundos a milisegundos y sumamos los nanosegundos en microsegundos
+    const milliseconds = (seconds * 1000) + (nanoseconds / 1000000);
+    
+    // Creamos el objeto Date
+    const date = new Date(milliseconds);
+
+    return date;
+}
+//ToDo: add caching support
 export const RecipesService = 
 {
-    recipies: [],
+    recipes: [],
     addRecipe(item) {
-        let d = new Date(item.fecha),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        item.fechaFormated = [day, month, year].join('/');
-
-        item.clinica = 'Mérida'
-        item.employeeId = 1; // {1, Dr. Angel de la Luz Ramirez}
-        this.recipies.push(item);
+        this.recipes.push(item);
     },
-    async getRecipeData() {
-        const recipesCol = collection(database, 'recipes');
-        const recipesSnapshot = await getDocs(recipesCol);
-        this.recipes = recipesSnapshot.docs.map(doc => doc.data());
+    async getRecipesData() {
+        const recipesCollection = collection(database, 'recipes');
+        const recipesSnapshot = await getDocs(recipesCollection);
         
-        console.log('recipesList',this.recipes.length)
-        return this.recipes;
+        console.log('firebase recipes')
+        return recipesSnapshot.docs.map(doc => {
+            const row = doc.data()
+            row.fecha = (timestampToDate(row.fecha.seconds,row.fecha.nanoseconds)).toLocaleDateString();
+            row.pacientFullName = row.pacient.nombre+' '+row.pacient.apaterno+' '+row.pacient.amaterno
+            console.log('recipes', row)
+            return row
+        })
     },
     getRecipes() {
-        return Promise.resolve(this.getRecipeData())
+        return Promise.resolve(this.getRecipesData())
     },
 
 }

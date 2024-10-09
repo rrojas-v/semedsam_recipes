@@ -8,15 +8,15 @@
         <template #icons>
             <Button icon="pi pi-user-plus" @click="showPacientDialog" severity="contrast" text rounded aria-label=""
                 size="large" />
-            <Button icon="pi pi-search" @click="showSearchPacientDialogVisible = true" class="mr-2" severity="contrast"
-                text rounded aria-label="" size="large" />
+            <Button icon="pi pi-search" @click="showPacientSearchDialog" class="mr-2" severity="contrast" text rounded
+                aria-label="" size="large" />
         </template>
 
         <div class="m-0">
             <div class="grid">
                 <div class="col">
                     Nombre:<span v-if="selectedPacient" class="text-left p-3 border-round-sm bg-primary font-bold">{{
-                        pacientfullName }}</span>
+                        pacientFullName }}</span>
                 </div>
 
             </div>
@@ -26,29 +26,16 @@
                         selectedPacient.sexo.name }}</span>
                 </div>
                 <div class="col">
-                    Edad:<span v-if="selectedPacient" class="text-left p-3 border-round-sm bg-primary font-bold">{{
-                        pacientAge }} años</span>
+                    Edad:<span v-if="selectedPacient" class="text-left p-3 border-round-sm bg-primary font-bold">
+                        {{ pacientAge }} años</span>
                 </div>
                 <div class="col">
                     Fecha de nacimiento:<span v-if="selectedPacient"
-                        class="text-left p-3 border-round-sm bg-primary font-bold">{{
-    pacientFechaNacimiento }}</span>
+                        class="text-left p-3 border-round-sm bg-primary font-bold">
+                        {{ pacientFnacimientoDate }}</span>
                 </div>
             </div>
         </div>
-
-        <!-- <template #content>
-            {{ selectedPacient }}
-            <div class="card flex justify-center">
-                <div class="card flex justify-center">
-                    -->
-
-        <!-- <h4></h4> -->
-        <!-- <AutoComplete v-model="newPacient" optionLabel="nombre" :suggestions="filteredPacients"
-                        @complete="searchByKeyPacient" class="pr-2" /> -->
-        <!-- </div>
-            </div>
-        </template> -->
     </Panel>
     <div class="card">
 
@@ -65,27 +52,6 @@
                     })
                 }
             }" showGridlines>
-            <template #header>
-                <!-- <Toolbar>
-                    <template #start>
-                        <Button label="Agregar" icon="pi pi-plus" class="mr-2" @click="openNew" severity="contrast" text
-                            rounded aria-label="" />
-                        <Button label="Borrar" icon="pi pi-trash" severity="danger" outlined
-                            @click="confirmDeleteSelected"
-                            :disabled="!selectedMedications || !selectedMedications.length" text rounded
-                            aria-label="" />
-                    </template>
-        <template #end>
-                                    <Button label="Guardar Receta" icon="pi pi-check" severity="contrast" @click="saveRecipe" text
-                                        rounded aria-label="" />
-                                </template>
-        </Toolbar> -->
-            </template>
-
-            <!--<Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-            <Column field="id" header="id" sortable style="min-width: 12rem"></Column>
-            <Column field="OneLine" header="" sortable style="min-width: 16rem"></Column>
-            -->
             <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" style="width: 90%">
                 <template #editor="{ data, field }">
                     <template v-if="field !== 'id'">
@@ -112,8 +78,8 @@
         </DataTable>
         <Toolbar>
             <template #start>
-                <Button label="Guardar Receta" icon="pi pi-check" severity="contrast" @click="saveRecipe" text rounded
-                    aria-label="" :disabled="!selectedPacient" />
+                <Button label="Guardar Receta" icon="pi pi-check" severity="contrast" @click="showPreview()" text
+                    rounded aria-label="" :disabled="!selectedPacient" />
             </template>
         </Toolbar>
     </div>
@@ -127,27 +93,6 @@
                 <small v-if="submitted && !medication.nombre" class="text-red-500">Nombre es requerido.</small>
             </div>
         </div>
-        <!-- <div class="formgrid grid">
-            <div class="field col">
-                <label for="cantidad" class="font-bold block mb-2">Cantidad</label>
-                <AutoComplete v-model="medication.cantidad" :suggestions="itemsCantidad" dropdown
-                    @complete="searchCantidad" />
-            </div>
-            <div class="field col">
-                <label for="Cada" class="font-bold block mb-2"> Cada </label>
-                <InputNumber v-model="medication.cada" inputId="cada" suffix=" horas" fluid />
-            </div>
-            <div class="field col">
-                <label for="durante" class="font-bold block mb-2"> Durante </label>
-                <InputNumber v-model="medication.durante" inputId="durante" suffix=" días" fluid />
-            </div>
-        </div>
-        <div class="formgrid grid">
-            <div class="field col">
-                <label for="viaAdmin" class="block font-bold mb-3">Vía de admnistración</label>
-                <InputText id="viaAdmin" v-model="medication.viaAdmin" required="true" fluid />
-            </div>
-        </div> -->
 
         <template #footer>
             <Button label="Cancelar" icon="pi pi-times" text @click="hideDialog" />
@@ -188,14 +133,14 @@
             </div>
             <div class="field col">
                 <label for="apaterno" class="block font-bold mb-2">Apellido paterno</label>
-                <InputText id="apaterno" v-model.trim="newPacient.apaterno" required="true" autofocus
+                <InputText id="apaterno" v-model.trim="newPacient.apaterno" required="true"
                     :invalid="newPacient && !newPacient.apaterno" fluid />
                 <small v-if="newPacient && !newPacient.apaterno" class="text-red-500">Capture para
                     continuar.</small>
             </div>
             <div class="field col">
                 <label for="amaterno" class="block font-bold mb-2">Apellido materno</label>
-                <InputText id="amaterno" v-model.trim="newPacient.amaterno" required="true" autofocus fluid />
+                <InputText id="amaterno" v-model.trim="newPacient.amaterno" required="true" fluid />
             </div>
         </div>
 
@@ -213,8 +158,7 @@
             <div class="field col">
                 <label for="sexo" class="font-bold block mb-2"> Sexo </label>
                 <Select id="sexo" v-model="newPacient.sexo" :options="sexoSelectOps" optionLabel="name"
-                    placeholder="Seleccione uno" class="w-full md:w-56"
-                    :invalid="newPacient && !newPacient.fnacimiento" />
+                    placeholder="Seleccione uno" class="w-full md:w-56" :invalid="newPacient && !newPacient.sexo" />
                 <small v-if="newPacient && !newPacient.sexo" class="text-red-500">Seleccione uno para
                     continuar.</small>
             </div>
@@ -235,14 +179,19 @@
             <Column field="nombre" header="Nombres"></Column>
             <Column field="apaterno" header="Apellido paterno"></Column>
             <Column field="amaterno" header="Apellido materno"></Column>
-            <!-- <Column field="fnacimiento" header="Fecha nacimiento" ></Column> -->
+            <Column field="fnacimientoDate" header="Fecha nacimiento"></Column>
         </DataTable>
         <template #footer>
             <Button label="Ok" icon="pi pi-check" @click="clicSearchPacient" />
         </template>
     </Dialog>
 
-
+    <Dialog v-model:visible="printDialog" modal header="Header" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <template #header>
+            <Button @click="saveAndDownload">Guardar y descargar receta</Button>
+        </template>
+        <RecipePrintComponent :recipe="newRecipe" />
+    </Dialog>
 </template>
 
 <script setup>
@@ -268,19 +217,18 @@ import { RecipesService } from '@/service/RecipeService';
 
 import router from '@/router'
 import html2pdf from 'html2pdf.js'
-
-import { database } from "@/firebase.js";
+import RecipePrintComponent from './RecipePrintComponent.vue'
+import { database } from "@/firebase";
 import { addDoc, collection } from 'firebase/firestore/lite'
 
 onMounted(() => {
-    PacientService.getPacients().then((data) => (pacients.value = data));
     MedicationsService.getMedications().then((data) => (medications.value = data));
 });
 
 const pacients = ref([]);
 const selectedPacient = ref();
 const newPacient = ref();
-const filteredPacients = ref();
+
 const pacientDialog = ref(false);
 const submittedPacient = ref(false);
 
@@ -296,60 +244,54 @@ const deleteMedicationDialog = ref(false);
 const deleteMedicationsDialog = ref(false);
 const medication = ref({});
 const selectedMedications = ref();
+const newRecipe = ref({})
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const submitted = ref(false);
-
-// const dosisCantidad = ['Tabletas', 'Gotas']
-// const itemsCantidad = ref([])
-// const searchCantidad = (event) => {
-//     itemsCantidad.value = dosisCantidad.map((item) => event.query + ' ' + item);
-// };
+const printDialog = ref(false)
 
 const columns = ref([
-    // { field: 'id', header: 'ID', style: 'width: 10px;' },
     { field: 'nombre', header: 'Medicamento', },
-    // { field: 'cantidad', header: 'Cantidad', },
-    // { field: 'cada', header: 'Cada', },
-    // { field: 'durante', header: 'Durante', },
-    // { field: 'viaAdmin', header: 'Via', },
 ]);
 const sexoSelectOps = ref([
     { name: 'Masculino' },
     { name: 'Femenino' }
 ])
 
+//ToDo: Add lazy loading
+const showPacientSearchDialog = () => {
+    showSearchPacientDialogVisible.value = true
+    PacientService.getPacients().then((data) => pacients.value = data)
+}
 const clicSearchPacient = () => {
-    console.log('clicSearchPacient', selectSearchPacient.value)
     showSearchPacientDialogVisible.value = false
-
     selectedPacient.value = selectSearchPacient.value;
 }
 
 //pacient begin
-const searchByKeyPacient = (event) => {
-    setTimeout(() => {
-        if (!event.query.trim().length) {
-            filteredPacients.value = [...pacients.value];
-        } else
-        //if (event.query.trim().length > 3) 
-        {
-            filteredPacients.value = pacients.value.filter((pacient) => {
-                return pacient.nombre.toLowerCase().startsWith(event.query.toLowerCase());
-            });
-        }
-    }, 250);
-}
-const searchByButtonPacient = () => {
-    if (selectedPacient.value.trim().length) {
-        filteredPacients.value = [...pacients.value];
-    } else {
-        filteredPacients.value = pacients.value.filter((pacient) => {
-            return pacient.nombre.toLowerCase().startsWith(selectedPacient.value.toLowerCase());
-        });
-    }
-}
+// const searchByKeyPacient = (event) => {
+//     setTimeout(() => {
+//         if (!event.query.trim().length) {
+//             filteredPacients.value = [...pacients.value];
+//         } else
+//         //if (event.query.trim().length > 3)
+//         {
+//             filteredPacients.value = pacients.value.filter((pacient) => {
+//                 return pacient.nombre.toLowerCase().startsWith(event.query.toLowerCase());
+//             });
+//         }
+//     }, 250);
+// }
+// const searchByButtonPacient = () => {
+//     if (selectedPacient.value.trim().length) {
+//         filteredPacients.value = [...pacients.value];
+//     } else {
+//         filteredPacients.value = pacients.value.filter((pacient) => {
+//             return pacient.nombre.toLowerCase().startsWith(selectedPacient.value.toLowerCase());
+//         });
+//     }
+// }
 const showPacientDialog = () => {
     newPacient.value = {}
     submittedPacient.value = false
@@ -359,54 +301,52 @@ const hidePacientDialog = () => {
     submittedPacient.value = false;
     pacientDialog.value = false;
 };
+
+const pacientFullName = computed(() => {
+    if (selectedPacient.value) {
+        return selectedPacient.value.nombre + ' ' + selectedPacient.value.apaterno + ' ' + selectedPacient.value.amaterno
+    }
+    else {
+        return null
+    }
+})
+function getAge(d1) {
+    let diff = (new Date()).getTime() - d1.getTime();
+    return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+}
+const pacientAge = computed(() => {
+    return getAge(new Date(selectedPacient.value.fnacimiento.seconds * 1000))
+})
+const pacientFnacimientoDate = computed(() => {
+    return (new Date(selectedPacient.value.fnacimiento.seconds * 1000)).toLocaleDateString()
+})
 const savePacient = () => {
     if (newPacient.value.nombre && newPacient.value.apaterno && newPacient.value.fnacimiento && newPacient.value.sexo) {
         submittedPacient.value = true
         selectedPacient.value = {}
         selectedPacient.value.id = createCode()
-        selectedPacient.value.nombre = newPacient.value.nombre
-        selectedPacient.value.apaterno = newPacient.value.apaterno
-        selectedPacient.value.amaterno = newPacient.value.amaterno
-        selectedPacient.value.fnacimiento = newPacient.value.fnacimiento
+        selectedPacient.value.nombre = newPacient.value.nombre.toUpperCase()
+        selectedPacient.value.apaterno = newPacient.value.apaterno.toUpperCase()
+        selectedPacient.value.amaterno = newPacient.value.amaterno.toUpperCase()
+        selectedPacient.value.fnacimiento = {
+            seconds: newPacient.value.fnacimiento.getTime() / 1000,
+            nanoseconds: 0
+        }
         selectedPacient.value.sexo = newPacient.value.sexo
+
         pacients.value.push(selectedPacient.value)
+        PacientService.savePacientToDatabase(selectedPacient.value)
+
         hidePacientDialog()
     }
 }
-const pacientfullName = computed({
-    get() {
-        return selectedPacient.value.nombre + ' ' + selectedPacient.value.apaterno + ' ' + selectedPacient.value.amaterno
-    },
-})
-const pacientAge = computed({
-    get() {
-        var ageDifMs = Date.now() - selectedPacient.value.fnacimiento.getTime();
-        var ageDate = new Date(ageDifMs); // miliseconds from epoch
-        return Math.abs(ageDate.getUTCFullYear() - 1970);
-    }
-})
-const pacientFechaNacimiento = computed({
-    get() {
-        let d = new Date(selectedPacient.value.fnacimiento),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join(' / ');
-    }
-})
 //pacient end
 
-const medicationCaptured = computed({
-    get() {
-        return medications.value.length > 0 && medications.value[0].nombre
-    }
-})
+// const medicationCaptured = computed({
+//     get() {
+//         return medications.value.length > 0 && medications.value[0].nombre
+//     }
+// })
 
 const hideDialog = () => {
     medicationDialog.value = false;
@@ -415,6 +355,7 @@ const hideDialog = () => {
 const saveMedication = () => {
     submitted.value = true;
     if (medication?.value.nombre?.trim()) {
+        //medication.value.nombre = medication.value.nombre.toUpperCase()
         if (medication.value.id) {
             medications.value[findIndexById(medication.value.id)] = medication.value;
             toast.add({ severity: 'success', summary: 'Successful', detail: 'Medication Updated', life: 3000 });
@@ -432,18 +373,16 @@ const saveMedication = () => {
     }
 };
 const addMedication = (medication) => {
-    console.log(medications.value)
     const index = findIndexById(medication.id)
-    console.log(index);
     const newMedication = { id: createId(), nombre: '' }
     medications.value.splice(index + 1, 0, newMedication)
 }
-const editMedication = (medic) => {
-    medication.value = { ...medic };
+const editMedication = (medication) => {
+    medication.value = { ...medication };
     medicationDialog.value = true;
 };
-const confirmDeleteMedication = (medic) => {
-    medication.value = medic;
+const confirmDeleteMedication = (medication) => {
+    medication.value = medication;
     deleteMedicationDialog.value = true;
 };
 const deleteMedication = () => {
@@ -480,48 +419,30 @@ const deleteSelectedMedications = () => {
     selectedMedications.value = null;
     toast.add({ severity: 'success', summary: 'Successful', detail: 'Medications Deleted', life: 3000 });
 };
-const exportToPDF = () => {
-    let elEvens = document.querySelectorAll('tr.p-row-odd')
-    elEvens.forEach((e) => e.setAttribute("style", "background-color:#ffffff; color:#000000 !important"))
-    let elOdds = document.querySelectorAll('tr.p-row-even')
-    elOdds.forEach((e) => e.setAttribute("style", "background-color:#ffffff; color:#000000 !important"))
+const showPreview = () => {
+    newRecipe.value.fecha = new Date() //ToDo: use server date time instead
+    newRecipe.value.pacient = selectedPacient.value
+    newRecipe.value.medications = medications.value.map(medication => medication)
+    newRecipe.value.pacient.age = pacientAge
+    newRecipe.value.clinica = 'Mérida'
+    newRecipe.value.employeeId = 1; // {1, Dr. Angel de la Luz Ramirez}
 
-    let toPrint = document.querySelectorAll('tbody.p-datatable-tbody')[0]
-    console.log(toPrint)
-
-    html2pdf(toPrint, {
+    printDialog.value = true
+}
+const saveAndDownload = async () => {
+    const docRef = await addDoc(collection(database, "recipes"), newRecipe.value);
+    console.log("New recipe written with ID: ", docRef.id);
+    newRecipe.value.uid = docRef.id
+    const fileName = "receta-" + newRecipe.value.uid + "-" + selectedPacient.value.nombre + ' ' + selectedPacient.value.apaterno + ' ' + selectedPacient.value.amaterno
+    html2pdf(document.querySelector('#printable'), {
         margin: 20,
-        filename: "generated-pdf.pdf",
+        filename: fileName + ".pdf",
     });
-}
-
-const saveRecipeToDatabase = async (newRecipe) => {
-    try {
-        const docRef = await addDoc(collection(database, "recipes"), newRecipe);
-        console.log("New recipe written with ID: ", docRef.id);
-        return docRef.id
-    } catch (e) {
-        console.error("Error adding recipe: ", e);
-    }
-}
-
-const saveRecipe = () => {
-    if (!medicationCaptured.value) {
-        console.log('error falta medicamento')
-    }
-    else {
-
-        let newRecipe = {}
-        newRecipe.fecha = new Date()
-        newRecipe.pacient = selectedPacient.value
-        newRecipe.medications = medications.value.map(medication => medication)
-        RecipesService.addRecipe(newRecipe)
-        saveRecipeToDatabase(newRecipe)
-        exportToPDF()
-    }
-    console.log('saveRecipe', RecipesService.recipies)
+    printDialog.value = false
+    RecipesService.addRecipe(newRecipe)
     router.push('/')
 }
+
 const isPositiveInteger = (val) => {
     let str = String(val);
 
@@ -538,12 +459,9 @@ const isPositiveInteger = (val) => {
 };
 const onCellEditComplete = (event) => {
     let { data, newValue, field } = event;
-
     switch (field) {
-        case 'quantity':
-        case 'price':
-            if (isPositiveInteger(newValue)) data[field] = newValue;
-            else event.preventDefault();
+        case 'nombre':
+            data[field] = newValue.toUpperCase()
             break;
 
         default:
