@@ -26,7 +26,6 @@ export const RecipesService =
             const row = doc.data()
             row.fecha = (timestampToDate(row.fecha.seconds,row.fecha.nanoseconds)).toLocaleDateString();
             row.pacientFullName = row.pacient.nombre+' '+row.pacient.apaterno+' '+row.pacient.amaterno
-            console.log('recipes', row)
             return row
         })
     },
