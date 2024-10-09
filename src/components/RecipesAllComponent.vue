@@ -46,6 +46,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
 onMounted(() => {
+    console.log(import.meta.env.VITE_PROJECTID)
     RecipesService.getRecipes().then((data) => (recipes.value = data));
 });
 
