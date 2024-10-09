@@ -1,12 +1,6 @@
 <template>
     <div>
         <div class="card">
-            <!-- <Toolbar class="mb-6">
-                <template #start>
-                    <Button label="New" icon="pi pi-plus" class="mr-2" @click="openNew" />
-                </template>
-</Toolbar> -->
-
             <DataTable ref="dt" v-model:selection="selectedRecipes" :value="recipes" dataKey="id" :paginator="true"
                 :rows="10" :filters="filters"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -30,7 +24,6 @@
 
             </DataTable>
         </div>
-
     </div>
 </template>
 
@@ -46,7 +39,6 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
 onMounted(() => {
-    console.log(import.meta.env.VITE_PROJECTID)
     RecipesService.getRecipes().then((data) => (recipes.value = data));
 });
 
