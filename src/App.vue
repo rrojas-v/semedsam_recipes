@@ -24,6 +24,9 @@ import router from '@/router'
 const showList = () => {
   router.push('/');
 }
+const showListSales = () => {
+  router.push('/saletickets')
+}
 const showNew = () => {
   router.push('/newrecipe')
 }
@@ -33,7 +36,7 @@ const showNew = () => {
   <header>
     <div class="grid">
       <div class="col">
-        <div class="text-center p-3 border-round-sm bg-primary font-bold text-2xl">RECEPTARIO ELECTRÓNICO SEMEDSAM</div>
+        <div class="text-center p-3 border-round-sm bg-primary font-bold text-2xl">SEMEDSAM</div>
       </div>
     </div>
     <div class="grid">
@@ -41,10 +44,12 @@ const showNew = () => {
         <Toolbar>
           <template #start>
             <!-- <Button icon="pi pi-home" class="mr-2" severity="secondary" text size="large" /> -->
-            <Button label="Listado de Recetas" icon="pi pi-address-book" icon-pos="top" class="mr-2"
-              severity="secondary" text size="large" @click="showList" />
-            <Button label="Nueva Receta" icon="pi pi-file-plus" icon-pos="top" class="mr-2" severity="secondary" text
-              size="large" @click="showNew" />
+            <Button label="Recetas" icon="pi pi-address-book" icon-pos="top" class="mr-2" severity="secondary" text
+              size="large" @click="showList" />
+            <!-- <Button label="Nueva Receta" icon="pi pi-file-plus" icon-pos="top" class="mr-2" severity="secondary" text
+              size="large" @click="showNew" /> -->
+            <Button label="Tickets de Venta" icon="pi pi-address-book" icon-pos="top" class="mr-2" severity="secondary"
+              text size="large" @click="showListSales" />
           </template>
           <template #end>
             <Button icon="pi pi-power-off" severity="contrast" text rounded aria-label="" />

@@ -195,7 +195,7 @@
 </template>
 
 <script setup>
-
+//ToDo: limit to 5 medications per recipe
 import Button from 'primevue/button'
 import Toolbar from 'primevue/toolbar'
 import InputText from 'primevue/inputtext'

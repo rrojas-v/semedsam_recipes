@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RecipeComponent from '@/components/RecipeComponent.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
+import SaleTicketsComponent from '@/components/SaleTicketComponent.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,12 @@ const router = createRouter({
       path: '/newrecipe',
       name: 'newrecipe',
       component: RecipeComponent,
+      requiresAuth: true
+    },
+    {
+      path: '/saletickets',
+      name: 'sales',
+      component: SaleTicketsComponent,
       requiresAuth: true
     },
     {
