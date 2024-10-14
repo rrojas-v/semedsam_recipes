@@ -5,11 +5,12 @@ export const SaleTicketService = {
     saleTickets: [],
     async getSaleTicketsData() {
         if (!this.saleTickets.length) {
+            console.log("getSaleTicketsData")
             const saleTicketsCollection = collection(database, 'tickets')
             const saleTicketsSnapshot = await getDocs(saleTicketsCollection)
             this.saleTickets = saleTicketsSnapshot.docs.map(doc => doc.data())
-            return this.saleTickets
         }
+        return this.saleTickets
     },
     getSaleTickets() {
         return Promise.resolve(this.getSaleTicketsData())

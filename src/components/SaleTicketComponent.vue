@@ -3,7 +3,7 @@
         <Toolbar class="mb-2">
             <template #start>
                 <Button label="Nuevo Ticket" icon="pi pi-plus" class="mr-2" @click="openNewSaleTicket" />
-                <Button label="Cancelar Ticket de Venta" icon="pi pi-trash" severity="danger" outlined
+                <Button label="Cancelar Ticket" icon="pi pi-trash" severity="danger" outlined
                     @click="confirmDeleteSelected" :disabled="!selectedSales || !selectedSales.length" />
             </template>
             <template #end>
@@ -136,7 +136,6 @@ import html2pdf from 'html2pdf.js';
 import SaleTicketPrintComponent from './SaleTicketPrintComponent.vue';
 
 onMounted(() => {
-    console.log('onMounted')
     SaleTicketService.getSaleTicketsData().then((data) => saleTickets.value = data)
 });
 
@@ -189,29 +188,29 @@ const hideSaleTicketDialog = () => {
 const saveSaleTicket = async () => {
     submitted.value = true;
 
-    saleTicket.value.factura = ''
+    saleTicket.value.invoice = ''
     saleTicket.value.status = 'ACTIVO'
     saleTicket.value.date = new Date()
 
     if (!saleTickets.value)
         saleTickets.value = []
     if (saleTicket?.value.description?.trim()) {
-        if (saleTicket.value.id) {
-            saleTickets.value[findIndexById(saleTicket.value.id)] = saleTicket.value;
-            toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-        }
-        else {
+        // if (saleTicket.value.id) {
+        //     saleTickets.value[findIndexById(saleTicket.value.id)] = saleTicket.value;
+        //     toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+        // }
+        // else {
             saleTicket.value.id = createId();
             saleTicket.value.code = createId();
             saleTickets.value.push(saleTicket.value);
             toast.add({ severity: 'success', summary: 'Successful', detail: 'Ticket de venta creado', life: 3000 });
-        }
+        // }
 
         const docRef = await addDoc(collection(database, "tickets"), saleTicket.value);
         console.log("New sale ticket written with ID: ", docRef.id);
 
         printDialog.value = true
-        saleTicketDialog.value = true;
+        saleTicketDialog.value = false;
 
     }
 };

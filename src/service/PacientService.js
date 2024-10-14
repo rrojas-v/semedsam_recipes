@@ -2,15 +2,18 @@ import { database } from "@/firebase";
 import { collection, getDocs, addDoc } from "firebase/firestore/lite";
 
 export const PacientService = {
-    async savePacientToDatabase(newPacient) {
-        try {
+    async saveNewPacientToDatabase(newPacient) {
+        // try {
             newPacient.amaterno = ((newPacient.amaterno) ? newPacient.amaterno : '')
             const docRef = await addDoc(collection(database, 'pacients'), newPacient)
             console.log("New pacient written with ID: ", docRef.id);
             return docRef.id
-        } catch (e) {
-            console.error("Error adding recipe: ", e);
-        }
+        // } catch (e) {
+        //     console.error("Error adding recipe: ", e);
+        // }
+    },
+    async modifyPacientToDatabase() {
+        
     },
     async getPacientsData() {
         const pacientsCollection = collection(database, 'pacients')

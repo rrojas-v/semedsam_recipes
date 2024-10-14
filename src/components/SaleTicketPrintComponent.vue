@@ -74,18 +74,9 @@
                         {{ ticket.description }}
                     </div>
                 </div>
-                <!-- <div style="height: 350px;">
-                    <div v-for="item in ticket.medications" :key="item.id" class="grid pb-4">
-                        <div class="col-fixed min-w-min"> {{ item.id }}. </div>
-                        <div class="col uppercase"> {{ item.nombre }} </div>
-                    </div>
-                </div> -->
 
             </template>
             <template #footer>
-                <!-- <div class="text-xs" v-if="ticket.uid">Esta receta ha sido correctamente firmada: {{ ticket.uid }}</div>
-                <div class="text-xs" v-else>IMPORTANTE: Esta es una vista previa y no es v&aacute;lida como receta
-                    m&eacute;dica</div> -->
                 <div class="pb-4"></div>
                 <div class="grid">
                     <div class="col font-bold text-xs">SEMEDSAM M&Eacute;RIDA, YUC</div>

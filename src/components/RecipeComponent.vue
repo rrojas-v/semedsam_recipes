@@ -6,6 +6,8 @@
             </div>
         </template>
         <template #icons>
+            <Button v-if="selectedPacient" icon="pi pi-user-edit" @click="showPacientDialog" severity="contrast" text
+                rounded aria-label="" size="large" />
             <Button icon="pi pi-user-plus" @click="showPacientDialog" severity="contrast" text rounded aria-label=""
                 size="large" />
             <Button icon="pi pi-search" @click="showPacientSearchDialog" class="mr-2" severity="contrast" text rounded
@@ -23,7 +25,7 @@
             <div class="grid">
                 <div class="col">
                     Sexo:<span v-if="selectedPacient" class="text-left p-3 border-round-sm bg-primary font-bold">{{
-                        selectedPacient.sexo.name }}</span>
+                        selectedPacient.sexo?.name }}</span>
                 </div>
                 <div class="col">
                     Edad:<span v-if="selectedPacient" class="text-left p-3 border-round-sm bg-primary font-bold">
@@ -66,11 +68,6 @@
             </Column>
             <Column :exportable="false">
                 <template #body="slotProps">
-                    <Button icon="pi pi-pencil" size="small" outlined rounded @click="editMedication(slotProps.data)" />
-                </template>
-            </Column>
-            <Column :exportable="false">
-                <template #body="slotProps">
                     <Button icon="pi pi-trash" size="small" outlined rounded severity="danger"
                         @click="confirmDeleteMedication(slotProps.data)" />
                 </template>
@@ -84,7 +81,7 @@
         </Toolbar>
     </div>
 
-    <Dialog v-model:visible="medicationDialog" :style="{ width: '50%' }" header="Detalle del medicamento" :modal="true">
+    <!-- <Dialog v-model:visible="medicationDialog" :style="{ width: '50%' }" header="Detalle del medicamento" :modal="true">
         <div class="formgrid grid">
             <div class="field col">
                 <label for="nombre" class="block font-bold mb-3">Medicamento y presentación</label>
@@ -98,7 +95,7 @@
             <Button label="Cancelar" icon="pi pi-times" text @click="hideDialog" />
             <Button label="Guardar" icon="pi pi-check" @click="saveMedication" />
         </template>
-    </Dialog>
+    </Dialog> -->
 
     <Dialog v-model:visible="deleteMedicationDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
         <div class="flex items-center gap-4">
@@ -122,7 +119,7 @@
         </template>
     </Dialog>
 
-    <Dialog v-model:visible="pacientDialog" header="Información del Paciente" :modal="true">
+    <!-- <Dialog v-model:visible="pacientDialog" header="Información del Paciente" :modal="true">
         <div class="formgrid grid">
             <div class="field col">
                 <label for="nombre" class="block font-bold mb-2">Nombre</label>
@@ -169,6 +166,56 @@
             <Button label="Cancelar" icon="pi pi-times" text @click="hidePacientDialog" />
             <Button label="Guardar" icon="pi pi-check" @click="savePacient" />
         </template>
+    </Dialog> -->
+
+    <Dialog v-model:visible="pacientDialog" header="Información del Paciente" :modal="true">
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="nombre" class="block font-bold mb-2">Nombre</label>
+                <InputText id="nombre" v-model.trim="selectedPacient.nombre" required="true" autofocus
+                    :invalid="selectedPacient && !selectedPacient.nombre" fluid />
+                <small v-if="selectedPacient && !selectedPacient.nombre" class="text-red-500">Capture para
+                    continuar.</small>
+            </div>
+            <div class="field col">
+                <label for="apaterno" class="block font-bold mb-2">Apellido paterno</label>
+                <InputText id="apaterno" v-model.trim="selectedPacient.apaterno" required="true"
+                    :invalid="selectedPacient && !selectedPacient.apaterno" fluid />
+                <small v-if="selectedPacient && !selectedPacient.apaterno" class="text-red-500">Capture para
+                    continuar.</small>
+            </div>
+            <div class="field col">
+                <label for="amaterno" class="block font-bold mb-2">Apellido materno</label>
+                <InputText id="amaterno" v-model.trim="selectedPacient.amaterno" required="true" fluid />
+            </div>
+        </div>
+
+        <div class="formgrid grid">
+            <div class="field col">
+                <div class="field col">
+                    <label for="FNacimiento" class="font-bold block mb-2"> F. Nacimiento </label>
+                    <DatePicker id="fnacimiento" v-model="selectedPacient.fnacimiento" showIcon
+                        :invalid="selectedPacient && !selectedPacient.fnacimiento" fluid iconDisplay="input"
+                        :maxDate="new Date()" />
+                    <small v-if="selectedPacient && !selectedPacient.fnacimiento" class="text-red-500">Seleccione una
+                        fecha para continuar.</small>
+                </div>
+            </div>
+            <div class="field col">
+                <label for="sexo" class="font-bold block mb-2"> Sexo </label>
+                <Select id="sexo" v-model="selectedPacient.sexo" :options="sexoSelectOps" optionLabel="name"
+                    placeholder="Seleccione uno" class="w-full md:w-56"
+                    :invalid="selectedPacient && !selectedPacient.sexo" />
+                <small v-if="selectedPacient && !selectedPacient.sexo" class="text-red-500">Seleccione uno para
+                    continuar.</small>
+            </div>
+            <div class="field col"></div>
+        </div>
+
+        <template #footer>
+            <Button label="Cancelar" icon="pi pi-times" text @click="hidePacientDialog" />
+            <Button label="Guardar" icon="pi pi-check" @click="savePacient" />
+        </template>
     </Dialog>
 
     <Dialog v-model:visible="showSearchPacientDialogVisible" header="Listado de pacientes" :style="{ width: '75vw' }"
@@ -191,6 +238,11 @@
             <Button @click="saveAndDownload">Guardar y descargar receta</Button>
         </template>
         <RecipePrintComponent :recipe="newRecipe" />
+    </Dialog>
+    <Dialog v-model:visible="askAmountDialog" modal header="Header" :breakpoints="{ '300px': '75vw', '475px': '90vw' }">
+
+        <div>HOLA</div>
+
     </Dialog>
 </template>
 
@@ -222,12 +274,13 @@ import { database } from "@/firebase";
 import { addDoc, collection } from 'firebase/firestore/lite'
 
 onMounted(() => {
+    console.log("onMounted recipe");
     MedicationsService.getMedications().then((data) => (medications.value = data));
 });
 
 const pacients = ref([]);
 const selectedPacient = ref();
-const newPacient = ref();
+//const newPacient = ref();
 
 const pacientDialog = ref(false);
 const submittedPacient = ref(false);
@@ -250,6 +303,7 @@ const filters = ref({
 });
 const submitted = ref(false);
 const printDialog = ref(false)
+const askAmountDialog = ref(false)
 
 const columns = ref([
     { field: 'nombre', header: 'Medicamento', },
@@ -293,7 +347,7 @@ const clicSearchPacient = () => {
 //     }
 // }
 const showPacientDialog = () => {
-    newPacient.value = {}
+    selectedPacient.value = {}
     submittedPacient.value = false
     pacientDialog.value = true
 };
@@ -303,7 +357,7 @@ const hidePacientDialog = () => {
 };
 
 const pacientFullName = computed(() => {
-    if (selectedPacient.value) {
+    if (selectedPacient.value && selectedPacient.value.nombre && selectedPacient.value.apaterno) {
         return selectedPacient.value.nombre + ' ' + selectedPacient.value.apaterno + ' ' + selectedPacient.value.amaterno
     }
     else {
@@ -315,30 +369,54 @@ function getAge(d1) {
     return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
 }
 const pacientAge = computed(() => {
-    return getAge(new Date(selectedPacient.value.fnacimiento.seconds * 1000))
+    if (selectedPacient.value.fnacimiento) {
+        return getAge(new Date(selectedPacient.value.fnacimiento.seconds * 1000))
+    }
+    else {
+        return null
+    }
 })
 const pacientFnacimientoDate = computed(() => {
-    return (new Date(selectedPacient.value.fnacimiento.seconds * 1000)).toLocaleDateString()
+    if (selectedPacient.value.fnacimiento) {
+        return (new Date(selectedPacient.value.fnacimiento?.seconds * 1000)).toLocaleDateString()
+    }
+    else {
+        return null
+    }
 })
+// const savePacient_ren = () => {
+//     if (newPacient.value.nombre && newPacient.value.apaterno && newPacient.value.fnacimiento && newPacient.value.sexo) {
+//         submittedPacient.value = true
+//         selectedPacient.value = {}
+//         selectedPacient.value.id = createCode()
+//         selectedPacient.value.nombre = newPacient.value.nombre.toUpperCase()
+//         selectedPacient.value.apaterno = newPacient.value.apaterno.toUpperCase()
+//         selectedPacient.value.amaterno = newPacient.value.amaterno.toUpperCase()
+//         selectedPacient.value.fnacimiento = {
+//             seconds: newPacient.value.fnacimiento.getTime() / 1000,
+//             nanoseconds: 0
+//         }
+//         selectedPacient.value.sexo = newPacient.value.sexo
+
+//         pacients.value.push(selectedPacient.value)
+//         PacientService.savePacientToDatabase(selectedPacient.value)
+
+//         hidePacientDialog()
+//     }
+// }
 const savePacient = () => {
-    if (newPacient.value.nombre && newPacient.value.apaterno && newPacient.value.fnacimiento && newPacient.value.sexo) {
-        submittedPacient.value = true
-        selectedPacient.value = {}
-        selectedPacient.value.id = createCode()
-        selectedPacient.value.nombre = newPacient.value.nombre.toUpperCase()
-        selectedPacient.value.apaterno = newPacient.value.apaterno.toUpperCase()
-        selectedPacient.value.amaterno = newPacient.value.amaterno.toUpperCase()
+    if (!selectedPacient.value.id) {
         selectedPacient.value.fnacimiento = {
-            seconds: newPacient.value.fnacimiento.getTime() / 1000,
+            seconds: selectedPacient.value.fnacimiento.getTime() / 1000,
             nanoseconds: 0
         }
-        selectedPacient.value.sexo = newPacient.value.sexo
-
         pacients.value.push(selectedPacient.value)
-        PacientService.savePacientToDatabase(selectedPacient.value)
-
-        hidePacientDialog()
+        PacientService.saveNewPacientToDatabase(selectedPacient.value)
     }
+    else {
+        pacients.value[findIndexById(pacients.value.id)] = pacients.value;
+    }
+    hidePacientDialog()
 }
 //pacient end
 
@@ -429,6 +507,26 @@ const showPreview = () => {
 
     printDialog.value = true
 }
+const saveSaleTicket = async () => {
+
+    askAmountDialog.value = true
+
+    const saleTicket = {}
+    saleTicket.invoice = ''
+    saleTicket.status = 'ACTIVO'
+    saleTicket.date = new Date()
+
+    saleTicket.id = createId();
+    saleTicket.code = createId();
+
+    saleTicket.amount = 800
+    //    const servicio = { id: 1, name: 'Consulta Externa' }
+    saleTicket.servicio = 'Consulta Externa'
+
+    const docRef = await addDoc(collection(database, "tickets"), saleTicket);
+    console.log("New sale ticket written with ID: ", docRef.id);
+
+}
 const saveAndDownload = async () => {
     const docRef = await addDoc(collection(database, "recipes"), newRecipe.value);
     console.log("New recipe written with ID: ", docRef.id);
@@ -440,6 +538,9 @@ const saveAndDownload = async () => {
     });
     printDialog.value = false
     RecipesService.addRecipe(newRecipe)
+
+    saveSaleTicket()
+
     router.push('/')
 }
 

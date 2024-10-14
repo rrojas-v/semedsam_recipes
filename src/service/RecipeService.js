@@ -18,16 +18,18 @@ export const RecipesService =
         this.recipes.push(item);
     },
     async getRecipesData() {
-        const recipesCollection = collection(database, 'recipes');
-        const recipesSnapshot = await getDocs(recipesCollection);
-        
-        console.log('firebase recipes')
-        return recipesSnapshot.docs.map(doc => {
-            const row = doc.data()
-            row.fecha = (timestampToDate(row.fecha.seconds,row.fecha.nanoseconds)).toLocaleDateString();
-            row.pacientFullName = row.pacient.nombre+' '+row.pacient.apaterno+' '+row.pacient.amaterno
-            return row
-        })
+        // if (!this.recipes.length) {
+            const recipesCollection = collection(database, 'recipes');
+            const recipesSnapshot = await getDocs(recipesCollection);
+            
+            console.log('firebase recipes')
+            return recipesSnapshot.docs.map(doc => {
+                const row = doc.data()
+                row.fecha = (timestampToDate(row.fecha.seconds,row.fecha.nanoseconds)).toLocaleDateString();
+                row.pacientFullName = row.pacient.nombre+' '+row.pacient.apaterno+' '+row.pacient.amaterno
+                return row
+            })
+        // }
     },
     getRecipes() {
         return Promise.resolve(this.getRecipesData())
