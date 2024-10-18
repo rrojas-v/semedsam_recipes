@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import RecipeComponent from '@/components/RecipeComponent.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
 import SaleTicketsComponent from '@/components/SaleTicketComponent.vue'
+import InvoiceComponent from '@/components/InvoiceComponent.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,12 @@ const router = createRouter({
       path: '/saletickets',
       name: 'sales',
       component: SaleTicketsComponent,
+      requiresAuth: true
+    },
+    {
+      path: '/facturacion',
+      name: 'facturacion',
+      component: InvoiceComponent,
       requiresAuth: true
     },
     {

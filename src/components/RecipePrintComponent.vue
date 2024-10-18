@@ -41,8 +41,8 @@
                     </div>
                     <div class="col">
                         <div v-if="recipe.pacient"
-                            class="border-bottom-1 border-primary-500 bg-primary font-bold uppercase">{{
-                                recipe.pacient.nombre
+                            class="border-bottom-1 border-primary-500 bg-primary font-bold uppercase">
+                            {{ recipe.pacient.nombre
                                 + ' ' + recipe.pacient.apaterno
                                 + ' ' + recipe.pacient.amaterno }}.
                         </div>
@@ -79,19 +79,27 @@
                         Medicamentos:
                     </div>
                 </div>
-                <div style="height: 350px;">
+                <div style="height: 300px;">
                     <div v-for="item in recipe.medications" :key="item.id" class="grid pb-4">
-                        <div class="col-fixed min-w-min"> {{ item.id }}. </div>
-                        <div class="col uppercase"> {{ item.nombre }} </div>
+                        <!-- <div class="col-fixed min-w-min"> {{ item.id }}. </div> -->
+                        <div class="col uppercase"> {{ item.medication }} {{ item.dosis }}</div>
                     </div>
                 </div>
-
             </template>
             <template #footer>
-                <div class="text-xs" v-if="recipe.uid">Esta receta ha sido correctamente firmada: {{ recipe.uid }}</div>
-                <div class="text-xs" v-else>IMPORTANTE: Esta es una vista previa y no es v&aacute;lida como receta
-                    m&eacute;dica</div>
-                <div class="pb-4"></div>
+                <div class="grid" v-if="recipe.uid">
+                    <div class="col text-xs flex align-items-end flex-wrap">
+                        Esta receta ha sido firmada correctamente: {{ recipe.uid }}
+                    </div>
+                    <div class="col flex justify-content-end flex-wrap">
+                        <QRCodeComponent :value="recipe.uid" />
+                    </div>
+                </div>
+                <div class="grid" v-else>
+                    <div class="text-xs col">
+                        IMPORTANTE: Esta es una vista previa y no es v&aacute;lida como receta m&eacute;dica
+                    </div>
+                </div>
                 <div class="grid">
                     <div class="col font-bold text-xs">SEMEDSAM M&Eacute;RIDA, YUC</div>
                     <div class="col font-bold text-xs">SEMEDSAM CANC&Uacute;N YUC</div>
@@ -121,7 +129,6 @@
                         0217</div>
                 </div>
             </template>
-
         </Card>
     </div>
 </template>
@@ -129,12 +136,13 @@
 <script setup>
 import { computed } from 'vue';
 import Card from 'primevue/card';
+import QRCodeComponent from './QRCodeComponent.vue';
 
 const { recipe } = defineProps(['recipe'])
 
 const recipeFechaNacimiento = computed(() => {
     if (recipe.pacient.fnacimiento) {
-        return (new Date(recipe.pacient.fnacimiento.seconds * 1000)).toLocaleDateString()
+        return recipe.pacient.fnacimiento.toLocaleDateString()
     }
     else {
         return null

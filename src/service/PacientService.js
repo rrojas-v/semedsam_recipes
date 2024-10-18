@@ -20,7 +20,11 @@ export const PacientService = {
         const pacientsSnapshot = await getDocs(pacientsCollection)
         
         console.log('firebase pacients')
-        return pacientsSnapshot.docs.map(doc => doc.data())
+        return pacientsSnapshot.docs.map(document => {
+            const doc = document.data()
+            doc.fnacimiento = new Date(doc.fnacimiento.seconds * 1000) 
+            return doc
+        })
     },
     getPacients() {
         return Promise.resolve(this.getPacientsData());

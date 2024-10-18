@@ -2,14 +2,89 @@
     <div class="card">
         <Toolbar class="mb-2">
             <template #start>
-                <Button label="Nuevo Ticket" icon="pi pi-plus" class="mr-2" @click="openNewSaleTicket" />
-                <Button label="Cancelar Ticket" icon="pi pi-trash" severity="danger" outlined
-                    @click="confirmDeleteSelected" :disabled="!selectedSales || !selectedSales.length" />
-            </template>
-            <template #end>
-                <Button label="Export" icon="pi pi-download" severity="secondary" @click="exportCSV($event)" />
+                <div class="flex align-items-center flex-wrap">
+                    <label class="flex align-items-center justify-content-center font-bold m-3">
+                        R.F.C.
+                    </label>
+                </div>
+                <div class="flex align-items-center flex-wrap">
+                    <label class="flex align-items-center justify-content-center font-bold m-3">
+                        <InputText v-model="user" placeholder="Capture su RFC" />
+                    </label>
+                </div>
+                <div class="flex align-items-center flex-wrap">
+                    <Button @click="login">Iniciar sesión</Button>
+                </div>
             </template>
         </Toolbar>
+        <div v-if="RFC">
+            <Accordion value="0">
+                <AccordionPanel value="0">
+                    <AccordionHeader>Datos Fiscales</AccordionHeader>
+                    <AccordionContent>
+                        <div class="grid" v-if="RFC">
+                            <div class="col w-full">
+                                <label>Raz&oacute;n Social</label>
+                            </div>
+                            <div class="col">
+                                <label>Regimen Fiscal</label>
+                            </div>
+                            <div class="col">
+                                <label>Nombre Comercial</label>
+                            </div>
+                        </div>
+                        <div class="grid">
+                            <div class="col">
+                                <InputText class="w-12" placeholder="razon social" v-model="razonsocial" />
+                            </div>
+                            <div class="col">
+                                <InputText class="w-12" placeholder="regimen fiscal" />
+                            </div>
+                            <div class="col">
+                                <InputText class="w-12" placeholder="nombre comercial" />
+                            </div>
+                        </div>
+                        <div class="grid">
+                            <div class="col">
+                                <label>Uso de CFDI</label>
+                            </div>
+                            <div class="col">
+                                <label>Direcci&oacute;n</label>
+                            </div>
+                            <div class="col">Correo</div>
+                        </div>
+                        <div class="grid">
+                            <div class="col">
+                                <InputText class="w-12" placeholder="Uso de CFDI" />
+                            </div>
+                            <div class="col">
+                                <InputText class="w-12" placeholder="Dirección" />
+                            </div>
+                            <div class="col">
+                                <InputText class="w-12" placeholder="Correo" />
+                            </div>
+                        </div>
+                    </AccordionContent>
+                </AccordionPanel>
+                <AccordionPanel value="1">
+                    <AccordionHeader>Tickets</AccordionHeader>
+                    <AccordionContent>
+                        <div class="grid" v-if="razonsocial">
+                            <div class="col">
+                                <InputText class="w-12" placeholder="folio" v-model="code" />
+                            </div>
+                            <!-- <div class="col">
+                                <InputText class="w-62" placeholder="importe" v-model="amount" />
+                            </div> -->
+                            <div class="col">
+                                <Button @click="addTicket" label="Agregar" />
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </AccordionContent>
+                </AccordionPanel>
+            </Accordion>
+        </div>
 
         <DataTable ref="dt" v-model:selection="selectedSales" :value="saleTickets" dataKey="id" :paginator="true"
             :rows="10" :filters="filters"
@@ -17,14 +92,15 @@
             :rowsPerPageOptions="[5, 10, 25]"
             currentPageReportTemplate="{first} a {last} de {totalRecords} tickets de venta">
             <template #header>
-                <div class="flex flex-wrap gap-2 items-center justify-between">
-                    <h4 class="m-2">Tickets de Venta</h4>
-                    <IconField>
+                <div class="flex flex-wrap gap-2 items-center justify-between" v-if="saleTickets.length">
+                    <!-- <h4 class="m-2">Tickets de Venta</h4> -->
+                    <!-- <IconField>
                         <InputIcon>
                             <i class="pi pi-search" />
                         </InputIcon>
                         <InputText v-model="filters['global'].value" placeholder="Buscar..." />
-                    </IconField>
+                    </IconField> -->
+                    <Button @click="facturar">Facturar</Button>
                 </div>
             </template>
 
@@ -130,14 +206,25 @@ import Select from 'primevue/select';
 import InputNumber from 'primevue/inputnumber';
 import Dialog from 'primevue/dialog';
 import { SaleTicketService } from '@/service/SaleTicketsService';
-import { addDoc, collection } from 'firebase/firestore/lite';
+import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore/lite';
 import { database } from '@/firebase';
 import html2pdf from 'html2pdf.js';
 import SaleTicketPrintComponent from './SaleTicketPrintComponent.vue';
 
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
+
 onMounted(() => {
-    SaleTicketService.getSaleTicketsData().then((data) => saleTickets.value = data)
+    //    SaleTicketService.getSaleTicketsData().then((data) => saleTickets.value = data)
 });
+
+const RFC = ref()
+const user = ref()
+const razonsocial = ref()
+const code = ref()
+const amount = ref()
 
 const toast = useToast();
 const dt = ref();
@@ -168,9 +255,9 @@ const services = ref([
     { name: 'Servicios Especiales: Membresía Anual', id: '7' },
     { name: 'Servicios Especiales: SEMEDSAM Seguros', id: '8' },
 ]);
-const exportCSV = () => {
-    dt.value.exportCSV();
-};
+// const exportCSV = () => {
+//     dt.value.exportCSV();
+// };
 const formatCurrency = (value) => {
     if (value)
         return value.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
@@ -270,4 +357,31 @@ const findIndexById = (id) => {
     }
     return index;
 };
+
+const login = () => {
+    RFC.value = user.value
+}
+const addTicket = async () => {
+    const q = query(collection(database, "tickets"), where("code", "==", code.value));
+
+    try {
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot, querySnapshot.docs.length)
+        if (querySnapshot.docs.length === 0) {
+            alert("No existe folio de ticket")
+        }
+        else {
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+                saleTickets.value.push(doc.data())
+            });
+        }
+    } catch (e) {
+        alert('Folio de ticket no existe')
+    }
+}
+const facturar = () => {
+    alert("Facturando " + saleTickets.value.length + " tickets")
+}
 </script>
