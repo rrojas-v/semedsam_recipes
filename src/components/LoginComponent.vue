@@ -57,7 +57,7 @@ import { onMounted, ref, watch } from "vue";
 import InputText from 'primevue/inputtext';
 import FloatLabel from 'primevue/floatlabel';
 import Button from 'primevue/button';
-import { storeLogin } from "@/store/storeLogin";
+import { storeLogin } from "@/store/store";
 import router from "@/router";
 
 const username = ref(null);

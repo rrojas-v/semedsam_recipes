@@ -1,9 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import RecipeComponent from '@/components/RecipeComponent.vue'
+import RecipeComponentView from '@/views/RecipeView.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
 import SaleTicketsComponent from '@/components/SaleTicketComponent.vue'
 import InvoiceComponent from '@/components/InvoiceComponent.vue'
+import EstadisticaComponent from '@/components/EstadisticaComponent.vue'
+import MedicalRecordComponent from '@/components/MedicalRecordComponent.vue'
+import MembershipView from '@/views/MembershipView.vue'
+import CalendarView from '@/views/CalendarView.vue'
+import BinacleView from '@/views/BinacleView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,9 +24,14 @@ const router = createRouter({
       component: HomeView //AllRecipe
     },
     {
+      path: '/binacle',
+      name: 'binacle',
+      component: BinacleView
+    },
+    {
       path: '/newrecipe',
       name: 'newrecipe',
-      component: RecipeComponent,
+      component: RecipeComponentView,
       requiresAuth: true
     },
     {
@@ -34,6 +44,30 @@ const router = createRouter({
       path: '/facturacion',
       name: 'facturacion',
       component: InvoiceComponent,
+      requiresAuth: true
+    },
+    {
+      path: '/estadisticas',
+      name: 'estadisticas',
+      component: EstadisticaComponent,
+      requiresAuth: true
+    },
+    {
+      path: '/medicalrecord',
+      name: 'medicalrecord',
+      component: MedicalRecordComponent,
+      requiresAuth: true
+    },
+    {
+      path: '/membership',
+      name: 'membership',
+      component: MembershipView,
+      requiresAuth: true
+    },
+    {
+      path: '/calendar',
+      name: 'calendar',
+      component: CalendarView,
       requiresAuth: true
     },
     {

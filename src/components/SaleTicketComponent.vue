@@ -35,7 +35,7 @@
                     {{ formatCurrency(slotProps.data.amount) }}
                 </template>
             </Column>
-            <Column field="servicio.name" header="Servicio" sortable style="min-width: 10rem"></Column>
+            <Column field="service.name" header="Servicio" sortable style="min-width: 10rem"></Column>
             <Column field="description" header="Comentarios" sortable style="min-width: 16rem"></Column>
             <Column field="status" header="Estado" sortable style="min-width: 12rem">
                 <template #body="slotProps">
@@ -137,6 +137,7 @@ import SaleTicketPrintComponent from './SaleTicketPrintComponent.vue';
 
 onMounted(() => {
     SaleTicketService.getSaleTicketsData().then((data) => saleTickets.value = data)
+    console.log(saleTickets)
 });
 
 const toast = useToast();
@@ -195,16 +196,9 @@ const saveSaleTicket = async () => {
     if (!saleTickets.value)
         saleTickets.value = []
     if (saleTicket?.value.description?.trim()) {
-        // if (saleTicket.value.id) {
-        //     saleTickets.value[findIndexById(saleTicket.value.id)] = saleTicket.value;
-        //     toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-        // }
-        // else {
-        // saleTicket.value.id = createId(saleTicket);
         saleTicket.value.code = createCode();
         saleTickets.value.push(saleTicket.value);
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Ticket de venta creado', life: 3000 });
-        // }
 
         const docRef = await addDoc(collection(database, "tickets"), saleTicket.value);
         console.log("New sale ticket written with ID: ", docRef.id);

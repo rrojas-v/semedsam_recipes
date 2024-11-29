@@ -2,11 +2,7 @@ export const MedicationsService = {
     getMedicationsData() {
         return [{
             id: '1',
-            nombre:'', 
-            // cantidad: '',
-            // cada: '',
-            // durante: '',
-            // viaadmin: ''
+            nombre:''
         }];
     },
     getMedications() {

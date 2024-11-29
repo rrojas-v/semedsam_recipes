@@ -5,3 +5,5 @@ export const storeLogin = reactive({
   token: '',
   authenticated: false
 })
+
+export const selectedPacient = reactive({})

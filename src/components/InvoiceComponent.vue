@@ -282,16 +282,9 @@ const saveSaleTicket = async () => {
     if (!saleTickets.value)
         saleTickets.value = []
     if (saleTicket?.value.description?.trim()) {
-        // if (saleTicket.value.id) {
-        //     saleTickets.value[findIndexById(saleTicket.value.id)] = saleTicket.value;
-        //     toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-        // }
-        // else {
-        // saleTicket.value.id = createId(saleTicket);
         saleTicket.value.code = createCode();
         saleTickets.value.push(saleTicket.value);
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Ticket de venta creado', life: 3000 });
-        // }
 
         const docRef = await addDoc(collection(database, "tickets"), saleTicket.value);
         console.log("New sale ticket written with ID: ", docRef.id);
